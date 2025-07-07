@@ -1,8 +1,8 @@
 import React, {  useRef, useState } from 'react';
-import {StyleSheet, View, Text, Button, Pressable} from 'react-native';
+import {StyleSheet, View, Text, Button, Pressable, Alert} from 'react-native';
 import {  useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Callout, LatLng, LongPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { colors } from '@/constants';
+import { alerts, colors, mapNavigations } from '@/constants';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MapStackParamList } from '@/navigations/stack/MapStackNavigator';
@@ -29,14 +29,26 @@ const MapHomeScreen() {
   const mapRef = useRef<MapView | null>(null);
 
   const {userLocation, isUserLocationError} = useUserLocation();
-  const {selectLocation, setSelectLocation} = useState<LatLng>();
+  const {selectLocation, setSelectLocation} = useState<LatLng | null>();
 
-  usePermission('PHOTO');
+  //usePermission('PHOTO');
   usePermission('LOCATION');
 
   
   const handleLongPressMapView = ({nativeEvent}:LongPressEvent) => {
     setSelectLocation(nativeEvent.coordinate)
+  }
+
+  const handlePressAddPost = () => {
+    if(!selectLocation) {
+      return Alert.alert(
+        alerts.NOT_SELECTED_LOCATION.TITLE, 
+        alerts.NOT_SELECTED_LOCATION.DESCRIPTION
+      );
+    }
+    navigation.navigate(mapNavigations.ADD_POST, {location: selectLocation}); // 해당 스크린으로 파라미터 객체 전달
+
+    setSelectLocation(null)
   }
 
 
@@ -95,6 +107,10 @@ const handlePressUserLocation = () => {
         </Pressable>
         
         <View style={styles.buttonList}>
+          <Pressable style={styles.mapButton} onPress={handlePressAddPost}>
+            <MaterialIcons name="add" color={colors.WHITE} size={25} />
+          </Pressable>
+
           <Pressable style={styles.mapButton} onPress={handlePressUserLocation}>
             <MaterialIcons name="my-location" color={colors.WHITE} size={25} />
           </Pressable>

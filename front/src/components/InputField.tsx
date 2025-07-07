@@ -1,4 +1,4 @@
-import React, {ForwardedRef, forwardRef, useRef} from 'react';
+import React, {ForwardedRef, forwardRef, ReactNode, useRef} from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -15,13 +15,14 @@ interface InputFieldProps extends TextInputProps {
   disabled?: boolean;
   error?: string;
   touched?: boolean;
+  icon?: ReactNode;
 }
 
 const deviceHeight = Dimensions.get('screen').height;
 
 const InputField = forwardRef(
   (
-    {disabled = false, error, touched, ...props}: InputFieldProps,
+    {disabled = false, error, touched, icon = null, ...props}: InputFieldProps,
     ref?: ForwardedRef<TextInput>, // 부모 컴포넌트의 참조객체를 받아옴.
   ) => {
     const innerRef = useRef<TextInput | null>(null); // 참조객체를 생성함.
@@ -38,17 +39,20 @@ const InputField = forwardRef(
             disabled && styles.disabled,
             touched && Boolean(error) && styles.inputError,
           ]}>
-          <TextInput
-            // ref={innerRef} // 제어하고 싶은 요소의 속성에 ref={참조객체}를 지정함.
-            ref={ref ? mergeRefs(innerRef, ref) : innerRef}
-            placeholderTextColor={colors.GRAY_500}
-            style={[styles.input, disabled && styles.disabled]}
-            editable={!disabled} // 수정 가능 여부
-            autoCapitalize="none"
-            spellCheck={false}
-            autoCorrect={false}
-            {...props}
-          />
+          <View style={Boolean(icon) && styles.innerContainer}>
+            {icon}
+            <TextInput
+              // ref={innerRef} // 제어하고 싶은 요소의 속성에 ref={참조객체}를 지정함.
+              ref={ref ? mergeRefs(innerRef, ref) : innerRef}
+              placeholderTextColor={colors.GRAY_500}
+              style={[styles.input, disabled && styles.disabled]}
+              editable={!disabled} // 수정 가능 여부
+              autoCapitalize="none"
+              spellCheck={false}
+              autoCorrect={false}
+              {...props}
+            />
+          </View>
           {touched && Boolean(error) && (
             <Text style={styles.error}>{error}</Text>
           )}
@@ -63,6 +67,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_200,
     padding: deviceHeight > 700 ? 15 : 10,
+  },
+  innerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
   input: {
     fontSize: 16,
