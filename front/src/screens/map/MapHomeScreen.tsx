@@ -14,6 +14,8 @@ import Ionicons from 'react-native-vector-icons/IonIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import mapStyle from '@/style/mapStyle';
 import CustomMarker from '@/components/CustomMarker';
+import useGetMarkers from '@/hooks/queries/useGetMarkers';
+
 
 
 type Navigation = CompositeNavigationProp<
@@ -31,7 +33,8 @@ const MapHomeScreen() {
   const {userLocation, isUserLocationError} = useUserLocation();
   const {selectLocation, setSelectLocation} = useState<LatLng | null>();
 
-  //usePermission('PHOTO');
+  const {data:markers = []} = useGetMarkers()
+
   usePermission('LOCATION');
 
   
@@ -46,7 +49,7 @@ const MapHomeScreen() {
         alerts.NOT_SELECTED_LOCATION.DESCRIPTION
       );
     }
-    navigation.navigate(mapNavigations.ADD_POST, {location: selectLocation}); // 해당 스크린으로 파라미터 객체 전달
+    navigation.navigate(mapNavigations.ADD_POST, {location: selectLocation}); // 해당 스크린으로 파라미터 객체를 전달함.
 
     setSelectLocation(null)
   }
@@ -76,21 +79,15 @@ const handlePressUserLocation = () => {
         customMapStyle={mapStyle}
         onLongPress={handleLongPressMapView}
         >
-          <CustomMarker
-            color="RED"
-            coordinate={{ 
-              latitude: 37.5516032365118,
-              longitude: 126.98989626020192
-            }}
-          />
-          <CustomMarker 
-           color="BLUE"
-            coordinate={{ 
-              latitude: 37.5616032365118,
-              longitude: 126.98989626020192
-            }} 
-          />
-          
+          {markers.map(({id, color, score, ...coordinate}) => (
+            <CustomMarker 
+              key={id} 
+              color={color} 
+              score={score} 
+              coordinate={coordinate}
+              />
+          ))}
+
           {selectLocation && (
           <Callout>
             <Marker coordinate={selectLocation} />
@@ -98,7 +95,6 @@ const handlePressUserLocation = () => {
           )}
 
         </MapView>
-
 
 
         <Pressable style={[styles.drawerButton, {top: inset.top || 20}]} 

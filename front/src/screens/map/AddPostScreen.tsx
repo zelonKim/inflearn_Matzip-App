@@ -1,18 +1,63 @@
 import { colors, mapNavigations } from '@/constants';
 import { MapStackParamList } from '@/navigations/stack/MapStackNavigator';
-import React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputField from '@/components/InputField';
 import Octicons from 'react-native-vector-icons/Octicons'
 import CustomButton from '@/components/CustomButton';
+import useForm from '@/hooks/useForm';
+import { validateAddPost, validateLogin } from '@/utils';
+import AddPostHeaderRight from '@/components/AddPostHeaderRight';
+import useMutateCreatePost from '@/hooks/queries/useMutateCreatePost';
+import { MarkerColor } from '@/types/domain';
 
 interface AddPostScreenProps = StackScreenProps<MapStackParamList, typeof mapNavigations.ADD_POST>
 
 
-function AddPostScreen({route}: AddPostScreenProps) {
+function AddPostScreen({route, navigation}: AddPostScreenProps) {
   const {location} = route.params; // 전달된 파라미터 객체를 받아옴.
+
+  const descriptionRef = useRef<TextInput | null>(null);
+
+
+  const addPost = useForm({
+    initialValue: {title: '', description: ''},
+    validate: validateAddPost,
+  })
+
+  const createPost = useMutateCreatePost()
+
+
+  const [markerColor, setMarkerColor] = useState<MarkerColor>('RED')
+  const [score, setScore] = useState(5)
+  const [address, setAddress] = useState('');
+
+  const handleSubmit = () => {
+    const body = {
+        date: new Date(),
+        title: addPost.values.title,
+        description: addPost.values.description,
+        color: markerColor,
+        score,
+        imageUris: []
+    };
+    createPost.mutate(
+        {address, ...location, ...body}, 
+        {
+            onSuccess: () => navigation.goBack(), // 뒤로 가기
+        }
+    );
+  };
+
+
+  useEffect(() => {
+    navigation.setOptions({
+        headerRight: () => AddPostHeaderRight(handleSubmit),
+    });
+
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,8 +70,25 @@ function AddPostScreen({route}: AddPostScreenProps) {
                     icon={<Octicons name='location' size={16} color={colors.GRAY_500}/>}
                 />
                 <CustomButton variant='outlined' size='large' label='날짜 선택' />
-                <InputField />
-                <InputField />
+                <InputField
+                    placeholder="제목을 입력하세요"
+                    error={addPost.errors.title}
+                    touched={addPost.touched.title}
+                    blurOnSubmit={false}
+                    returnKeyType="next"
+                    onSubmitEditing={() => descriptionRef.current?.focus()}
+                    {...addPost.getTextInputProps('title')}
+                    />
+                <InputField
+                    ref={descriptionRef}
+                    placeholder="기록하고 싶은 내용을 입력하세요. (선택)"
+                    multiline
+                    returnKeyType="next"
+                    error={addPost.errors.description}
+                    touched={addPost.touched.description}
+                    blurOnSubmit={false}
+                    {...addPost.getTextInputProps('description')}
+                    />
             </View>
         </ScrollView>
     </SafeAreaView>
