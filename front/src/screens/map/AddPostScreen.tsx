@@ -12,6 +12,7 @@ import { validateAddPost, validateLogin } from '@/utils';
 import AddPostHeaderRight from '@/components/AddPostHeaderRight';
 import useMutateCreatePost from '@/hooks/queries/useMutateCreatePost';
 import { MarkerColor } from '@/types/domain';
+import MarkerSelector from '@/components/MarkerSelector';
 
 interface AddPostScreenProps = StackScreenProps<MapStackParamList, typeof mapNavigations.ADD_POST>
 
@@ -33,6 +34,11 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
   const [markerColor, setMarkerColor] = useState<MarkerColor>('RED')
   const [score, setScore] = useState(5)
   const [address, setAddress] = useState('');
+
+  
+  const handleSelectMarker = (name: MarkerColor) => {
+    setMarkerColor(name)
+  }
 
   const handleSubmit = () => {
     const body = {
@@ -66,8 +72,10 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
 
         <ScrollView style={styles.contentContainer}>
             <View style={styles.inputContainer}>
-                <InputField value='' disabled  
-                    icon={<Octicons name='location' size={16} color={colors.GRAY_500}/>}
+                <InputField 
+                    value={address} 
+                    disabled  
+                    icon={<Octicons name='location' size={16} color={colors.GRAY_500} />}
                 />
                 <CustomButton variant='outlined' size='large' label='날짜 선택' />
                 <InputField
@@ -89,6 +97,10 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
                     blurOnSubmit={false}
                     {...addPost.getTextInputProps('description')}
                     />
+                <MarkerSelector 
+                    markerColor={markerColor} 
+                    onPressMarker={handleSelectMarker}    
+                />
             </View>
         </ScrollView>
     </SafeAreaView>
