@@ -5,6 +5,7 @@ import {colors} from '@/constants';
 import {MarkerColor} from '@/types/domain';
 
 interface MarkerSelectorProps {
+  score?: number;
   markerColor: MarkerColor;
   onPressMarker: (color: MarkerColor) => void;
 }
@@ -17,7 +18,11 @@ const categoryList: MarkerColor[] = [
   'PURPLE',
 ];
 
-function MarkerSelector({markerColor, onPressMarker}: MarkerSelectorProps) {
+function MarkerSelector({
+  score = 5,
+  markerColor,
+  onPressMarker,
+}: MarkerSelectorProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.markerLabel}> 마커 선택 </Text>
@@ -31,7 +36,7 @@ function MarkerSelector({markerColor, onPressMarker}: MarkerSelectorProps) {
                   markerColor === color && styles.pressedMarker,
                 ]}
                 onPress={() => onPressMarker(color)}>
-                <CustomMarker color={color} />
+                <CustomMarker color={color} score={score} />
               </Pressable>
             );
           })}
