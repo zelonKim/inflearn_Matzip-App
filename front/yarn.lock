@@ -6192,6 +6192,11 @@ react-native-gesture-handler@^2.26.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
+react-native-image-crop-picker@^0.50.1:
+  version "0.50.1"
+  resolved "https://registry.npmjs.org/react-native-image-crop-picker/-/react-native-image-crop-picker-0.50.1.tgz"
+  integrity sha512-2xtyKLU08AFqjRb1hUsSanO2OK9aCtfjggKzVhq/GDSfOI+WRGhoElcMuKeQEi3ey6mivz7UNFOOvNCqGjzKBA==
+
 react-native-is-edge-to-edge@^1.1.7, react-native-is-edge-to-edge@1.1.7:
   version "1.1.7"
   resolved "https://registry.npmjs.org/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.7.tgz"

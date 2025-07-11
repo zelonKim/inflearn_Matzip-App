@@ -1,7 +1,7 @@
 import { colors, mapNavigations } from '@/constants';
 import { MapStackParamList } from '@/navigations/stack/MapStackNavigator';
 import React, { useEffect, useRef, useState } from 'react';
-import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Image, Platform, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputField from '@/components/InputField';
@@ -16,6 +16,10 @@ import MarkerSelector from '@/components/MarkerSelector';
 import ScoreInput from '@/components/ScoreInput';
 import DatePickerOption from '@/components/DatePickerOption';
 import useModal from '@/hooks/useModal';
+import ImageInput from '@/components/ImageInput';
+import usePermission from '@/hooks/usePermission';
+import useImagePicker from '@/hooks/useImagePicker';
+import PreviewImageList from '@/components/PreviewImageList';
 
 interface AddPostScreenProps = StackScreenProps<MapStackParamList, typeof mapNavigations.ADD_POST>
 
@@ -40,6 +44,13 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
   const [date, setDate] = useState(new Date());
   const [isPicked, setIsPicked] = useState(false);
   const dateOption = useModal()
+  
+  const imagePicker = useImagePicker({
+    initialImages: []
+  })
+
+  usePermission('PHOTO')
+
   
 
   const handleConfirmDate = () => {
@@ -126,16 +137,19 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
                     markerColor={markerColor} 
                     onPressMarker={handleSelectMarker}    
                 />
-                <ScoreInput 
-                    score={score}
-                    onChangeScore={handleChangeScore}
-                />
-                <DatePickerOption 
-                    date={date} 
-                    isVisible={dateOption.isVisible} 
-                    onChangeDate={handleChangeDate} 
-                    onConfirmDate={handleConfirmDate}
-                />
+              <ScoreInput score={score} onChangeScore={handleChangeScore} />
+              
+              <View style={styles.imagesViewer}>
+                <ImageInput onChange={imagePicker.handleChange} />
+                <PreviewImageList imageUris={imagePicker.imageUris} />
+              </View>
+
+              <DatePickerOption 
+                date={date} 
+                isVisible={dateOption.isVisible} 
+                onChangeDate={handleChangeDate} 
+                onConfirmDate={handleConfirmDate}
+              />
             </View>
         </ScrollView>
     </SafeAreaView>
@@ -156,6 +170,10 @@ const styles = StyleSheet.create({
     inputContainer: {
         gap: 20,
         marginBottom: 20,
+    },
+    imagesViewer: {
+      flexDirection: 'row',
+
     }
 });
 
