@@ -77,7 +77,7 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
         description: addPost.values.description,
         color: markerColor,
         score,
-        imageUris: []
+        imageUris: imagePicker.imageUris,
     };
     createPost.mutate(
         {address, ...location, ...body}, 
@@ -141,7 +141,11 @@ function AddPostScreen({route, navigation}: AddPostScreenProps) {
               
               <View style={styles.imagesViewer}>
                 <ImageInput onChange={imagePicker.handleChange} />
-                <PreviewImageList imageUris={imagePicker.imageUris} />
+                <PreviewImageList 
+                  imageUris={imagePicker.imageUris} 
+                  onDelete={imagePicker.delete}
+                  onChangeOrder={imagePicker.changeOrder}
+                  />
               </View>
 
               <DatePickerOption 

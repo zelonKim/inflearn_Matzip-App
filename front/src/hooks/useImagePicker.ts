@@ -22,7 +22,17 @@ function useImagePicker({initialImages = []}: UseImagePickerProps) {
     setImageUris(prev => [...prev, ...uris.map(uri => ({uri}))]);
   };
 
+  const deleteImageUri = (uri: string) => {
+    const newImageUris = imageUris.filter(image => image.uri !== uri);
+    setImageUris(newImageUris);
+  };
 
+  const changeImageUrisOrder = (fromIndex: number, toIndex: number) => {
+    const copyImageUris = [...imageUris];
+    const [removedImage] = copyImageUris.splice(fromIndex, 1); // splice(시작 인덱스, 제거할 개수): 배열의 해당 인덱스부터 주어진 개수만큼의 요소를 제거함. & 제거된 요소를 반환함.
+    copyImageUris.splice(toIndex, 0, removedImage); // splice(시작 인덱스, 제거할 개수, 추가할 요소): 배열의 해당 인덱스부터 주어진 개수만큼의 요소를 제거하고, 그 자리에 요소를 추가함. & 제거된 요소를 반환함.
+    setImageUris(copyImageUris);
+  };
 
   const handleChange = () => {
     ImagePicker.openPicker({
@@ -41,15 +51,15 @@ function useImagePicker({initialImages = []}: UseImagePickerProps) {
       })
       .catch(error => {
         if (error.code !== 'E_PICKER_CANCELLED') {
-          // 에러 메시지 표시
         }
       });
   };
 
-
   return {
     imageUris,
     handleChange,
+    changeOrder: changeImageUrisOrder,
+    delete: deleteImageUri,
   };
 }
 

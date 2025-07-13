@@ -15,7 +15,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import mapStyle from '@/style/mapStyle';
 import CustomMarker from '@/components/CustomMarker';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
+import MarkerModal from '@/components/MarkerModal';
+import useModal from '@/hooks/useModal';
+import Config from 'react-native-config';
 
+console.log(Config.TEST)
 
 
 type Navigation = CompositeNavigationProp<
@@ -32,12 +36,28 @@ const MapHomeScreen() {
 
   const {userLocation, isUserLocationError} = useUserLocation();
   const {selectLocation, setSelectLocation} = useState<LatLng | null>();
+  const {markerId, setMarkerId} = useState<number | null>(null);
 
   const {data:markers = []} = useGetMarkers()
 
+  const markerModal = useModal();
+
   usePermission('LOCATION');
 
-  
+  const moveMapView = (coordinate: LatLng) => {
+    mapRef.current?.animateToRegion({
+      ...coordinate,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    })
+  }
+
+  const handlePressMarker = (id:number, coordinate:LatLng) => {
+    moveMapView(coordinate);
+    setMarkerId(id);
+    markerModal.show();
+  }
+
   const handleLongPressMapView = ({nativeEvent}:LongPressEvent) => {
     setSelectLocation(nativeEvent.coordinate)
   }
@@ -59,12 +79,7 @@ const handlePressUserLocation = () => {
   if(isUserLocationError) {
     return
   }
-  mapRef.current?.animateToRegion({ // 지도를 해당 좌표로 이동시킴.
-    latitude: userLocation.latitude,
-    longitude: userLocation.longitude,
-    longitudeDelta: 0.0421, // 확대 정도
-    latitudeDelta: 0.0922
-  })
+  moveMapView(userLocation);
 }
 
   return (
@@ -88,6 +103,7 @@ const handlePressUserLocation = () => {
               color={color} 
               score={score} 
               coordinate={coordinate}
+              onPress={() => handlePressMarker(id, coordinate)}
               />
           ))}
 
@@ -114,6 +130,8 @@ const handlePressUserLocation = () => {
             <MaterialIcons name="my-location" color={colors.WHITE} size={25} />
           </Pressable>
         </View>
+
+        <MarkerModal markerId={markerId} isVisible={markerModal.isVisible} hide={markerModal.hide}/>
     </>
   )
 }
