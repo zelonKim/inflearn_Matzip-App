@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import CustomMarker from './CustomMarker';
+import CustomMarker from './common/CustomMarker';
 import OctIcons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getDateWithSeparator} from '@/utils';
@@ -35,7 +35,6 @@ const MarkerModal = ({markerId, isVisible, hide}: MarkerModalProps) => {
         <Pressable style={styles.cardContainer} onPress={() => {}}>
           <View style={styles.cardInner}>
             <View style={styles.cardAlign}>
-
               {post?.images.length > 0 && (
                 <View style={styles.imageContainer}>
                   <Image
@@ -71,12 +70,11 @@ const MarkerModal = ({markerId, isVisible, hide}: MarkerModalProps) => {
                 </View>
 
                 <Text style={styles.titleText}>{post.title}</Text>
-                
+
                 <Text style={styles.DateText}>
                   {getDateWithSeparator(post.date, '.')}
                 </Text>
               </View>
-
             </View>
 
             <MaterialIcons

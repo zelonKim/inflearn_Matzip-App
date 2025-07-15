@@ -13,7 +13,7 @@ import usePermission from '@/hooks/usePermission';
 import Ionicons from 'react-native-vector-icons/IonIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import mapStyle from '@/style/mapStyle';
-import CustomMarker from '@/components/CustomMarker';
+import CustomMarker from '@/components/common/CustomMarker';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
 import MarkerModal from '@/components/MarkerModal';
 import useModal from '@/hooks/useModal';
