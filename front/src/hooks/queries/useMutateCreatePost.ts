@@ -9,15 +9,14 @@ function useMutateCreatePost(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
     mutationFn: createPost,
     onSuccess: newPost => {
-      // queryClient.invalidateQueries({
-      //   queryKey: [queryKeys.MARKER, queryKeys.GET_MARKERS],
-      // });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.POST, queryKeys.GET_POSTS],
+      });
 
       queryClient.setQueryData<Marker[]>( // 캐시를 직접 업데이트함.
         [queryKeys.MARKER, queryKeys.GET_MARKERS],
 
         existingMarkers => {
-          
           const newMarker = {
             id: newPost.id,
             latitude: newPost.latitude,
