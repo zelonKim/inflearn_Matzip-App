@@ -17,6 +17,7 @@ const colors = {
   PURPLE_400: '#C4C4E7',
   BLUE_400: '#42A5F5',
   BLUE_500: '#0D8AFF',
+  YELLOW_500: '#FACC15',
 };
 
 const colorHex = {

@@ -16,7 +16,9 @@ const ImageZoomScreen = ({route}: ImageZoomScreenProps) => {
 
   const {detailPost} = useDetailStore();
 
-  return <ImageCarousel images={detailPost?.images ?? []} />;
+  return (
+    <ImageCarousel images={detailPost?.images ?? []} pressedIndex={index} />
+  );
 };
 
 export default ImageZoomScreen;

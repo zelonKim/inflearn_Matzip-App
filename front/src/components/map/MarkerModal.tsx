@@ -1,4 +1,9 @@
-import {colors, feedNavigations, mainNavigations} from '@/constants';
+import {
+  colors,
+  feedNavigations,
+  feedTabNavigations,
+  mainNavigations,
+} from '@/constants';
 import useGetPost from '@/hooks/queries/useGetPost';
 import React from 'react';
 import {
@@ -21,6 +26,8 @@ import {FeedStackParamList} from '@/navigations/stack/FeedStackNavigator';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {MainDrawerParamList} from '@/navigations/drawer/MainDrawerNavigator';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {FeedTabParamList} from '@/navigations/tap/FeedTabNavigator';
 
 interface MarkerModalProps {
   markerId: number | null;
@@ -30,7 +37,7 @@ interface MarkerModalProps {
 
 type Navigation = CompositeNavigationProp<
   DrawerNavigationProp<MainDrawerParamList>,
-  StackNavigationProp<FeedStackParamList>
+  BottomTabNavigationProp<FeedTabParamList>
 >;
 
 const MarkerModal = ({markerId, isVisible, hide}: MarkerModalProps) => {
@@ -44,13 +51,16 @@ const MarkerModal = ({markerId, isVisible, hide}: MarkerModalProps) => {
 
   const handlePressModal = () => {
     navigation.navigate(mainNavigations.FEED, {
-      screen: feedNavigations.FEED_DETAIL, // 해당 스크린 컴포넌트를 지정함.
+      screen: feedTabNavigations.FEED_HOME,
       params: {
-        // 전달할 파라미터를 지정함.
-        id: post.id,
+        screen: feedNavigations.FEED_DETAIL,
+        params: {
+          id: post.id,
+        },
+        initial: false,
       },
-      initial: false, // 뒤로가기 시, 초기화면으로 돌아가지 않도록 해줌.
     });
+    hide();
   };
 
   return (

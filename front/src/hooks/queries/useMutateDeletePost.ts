@@ -8,21 +8,25 @@ import {useMutation} from '@tanstack/react-query';
 function useMutateDeletePost(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
     mutationFn: deletePost,
-    
-    onSuccess: deleteId => {
+
+    onSuccess: deletedId => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.POST, queryKeys.GET_POSTS],
       });
       queryClient.invalidateQueries({
         queryKey: [queryKeys.MARKER, queryKeys.GET_MARKERS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.POST, queryKeys.GET_CALEDAR_POSTS],
+      });
+    
 
-      queryClient.setQueryData<Marker[]>(
-        [queryKeys.MARKER, queryKeys.GET_MARKERS],
-        existingMarkers => {
-          return existingMarkers?.filter(marker => marker.id !== deleteId);
-        },
-      );
+      // queryClient.setQueryData<Marker[]>(
+      //   [queryKeys.MARKER, queryKeys.GET_MARKERS],
+      //   existingMarkers => {
+      //     return existingMarkers?.filter(marker => marker.id !== deleteId);
+      //   },
+      // );
     },
     ...mutationOptions,
   });

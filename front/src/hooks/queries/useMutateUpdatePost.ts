@@ -21,7 +21,17 @@ function useMutateUpdatePost(mutationOptions?: UseMutationCustomOptions) {
         [queryKeys.POST, queryKeys.GET_POST, newPost.id],
         newPost,
       );
+      
+      queryClient.invalidateQueries({
+        queryKey: [
+          queryKeys.POST,
+          queryKeys.GET_CALENDAR_POSTS,
+          new Date(newPost.date).getFullYear(),
+          new Date(newPost.date).getMonth() + 1,
+        ],
+      });
     },
+
     ...mutationOptions,
   });
 }

@@ -42,10 +42,47 @@ const updatePost = async ({
   return data;
 };
 
+const getFavoritePosts = async (page = 1): Promise<ResponsePost[]> => {
+  const {data} = await axiosInstance.get(`/favorites/my?page=${page}`);
+  return data;
+};
+
+const updateFavoritePost = async (id: number): Promise<number> => {
+  const {data} = await axiosInstance.post(`/favorites/${id}`);
+  return data;
+};
+
+type CalendarPost = {
+  id: number;
+  title: string;
+  address: string;
+};
+
+type ResponseCalendarPost = Record<number, CalendarPost[]>;
+
+const getCalendarPost = async (
+  year: number,
+  month: number,
+): Promise<ResponseCalendarPost> => {
+  const {data} = await axiosInstance.get(`/posts?year=${year}&month=${month}`);
+  return data;
+};
+
 export type {
   ResponsePost,
   RequestCreatePost,
   ResponseSinglePost,
   RequestUpdatePost,
+  ResponseCalendarPost,
+  CalendarPost,
 };
-export {createPost, getPost, getPosts, deletePost, updatePost};
+export {
+  createPost,
+  getPost,
+  getPosts,
+  deletePost,
+  updatePost,
+  updateFavoritePost,
+  getFavoritePosts,
+  getCalendarPost,
+};

@@ -35,6 +35,7 @@ import useLocationStore from '@/store/useLocationStore';
 import useModal from '@/hooks/useModal';
 import FeedDetailOption from '@/components/feed/FeedDetailOption';
 import useDetailStore from '@/store/useDetailPostStore';
+import useMutateFavoritePost from '@/hooks/queries/useMutateFavoritePost';
 
 type FeedDetailScreenProps = CompositeScreenProps<
   StackScreenProps<FeedStackParamList, typeof feedNavigations.FEED_DETAIL>,
@@ -48,6 +49,8 @@ function FeedDetailScreen({route, navigation}: FeedDetailScreenProps) {
   const {setMoveLocation} = useLocationStore();
   const {setDetailPost} = useDetailStore();
   const detailOption = useModal();
+
+  const favoriteMutation = useMutateFavoritePost();
 
   useEffect(() => {
     post && setDetailPost(post);
@@ -63,6 +66,10 @@ function FeedDetailScreen({route, navigation}: FeedDetailScreenProps) {
     navigation.navigate(mainNavigations.HOME, {
       screen: mapNavigations.MAP_HOME,
     });
+  };
+
+  const handlePressFavorite = () => {
+    favoriteMutation.mutate(id);
   };
 
   return (
@@ -167,8 +174,13 @@ function FeedDetailScreen({route, navigation}: FeedDetailScreenProps) {
             style={({pressed}) => [
               pressed && styles.bookmarkPressedContainer,
               styles.bookmarkContainer,
-            ]}>
-            <Octicons name="star-fill" size={30} color={colors.GRAY_100} />
+            ]}
+            onPress={handlePressFavorite}>
+            <Octicons
+              name="star-fill"
+              size={30}
+              color={post.isFavorite ? colors.YELLOW_500 : colors.GRAY_100}
+            />
           </Pressable>
           <CustomButton
             label="위치보기"

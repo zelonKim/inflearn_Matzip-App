@@ -13,6 +13,15 @@ function useMutateCreatePost(mutationOptions?: UseMutationCustomOptions) {
         queryKey: [queryKeys.POST, queryKeys.GET_POSTS],
       });
 
+      queryClient.invalidateQueries({
+        queryKey: [
+          queryKeys.POST,
+          queryKeys.GET_CALENDAR_POSTS,
+          new Date(newPost.date).getFullYear(),
+          new Date(newPost.date).getMonth() + 1,
+        ],
+      });
+
       queryClient.setQueryData<Marker[]>( // 캐시를 직접 업데이트함.
         [queryKeys.MARKER, queryKeys.GET_MARKERS],
 
