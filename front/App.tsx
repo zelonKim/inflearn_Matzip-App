@@ -1,81 +1,49 @@
-/*
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  Button,
-  TextInput,
-  SafeAreaView,
-  View,
-} from 'react-native';
-
-
-function App() {
-  const [name, setName] = useState('');
-
-  const handleChangeText = (text: string) => {
-    setName(text);
-  };
-
-  return (
-
-      <SafeAreaView style={styles.container}>
-        <View style={styles.inputContainer}>
-          <Text> 텍스트 </Text>
-          <Button title="버튼명" onPress={() => console.log('클릭됨.')} />
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChangeText}
-            value={name}
-          />
-        </View>
-      </SafeAreaView>
-
-  );
-}
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'red',
-    margin: '10%',
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 2,
-    borderColor: 'black',
-    height: 50,
-    width: 100,
-  },
-  inputContainer: {
-    flex: 1,
-    backgroundColor: 'red',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});
-
-export default App;
-
-*/
-
-//////////////////////////////////
-
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import RootNavigator from './src/navigations/RootNavigator';
 import {QueryClientProvider} from '@tanstack/react-query';
 import queryClient from './src/api/queryClient';
+import Toast, {
+  BaseToast,
+  BaseToastProps,
+  ErrorToast,
+} from 'react-native-toast-message';
+import {colors} from '@/constants';
+
+const toastConfig = {
+  success: (props: BaseToastProps) => (
+    <BaseToast
+      {...props}
+      style={{borderLeftColor: colors.BLUE_500}}
+      text1Style={{
+        fontSize: 14,
+      }}
+      text2Style={{
+        fontSize: 12,
+      }}
+    />
+  ),
+
+  error: (props: BaseToastProps) => (
+    <ErrorToast
+      {...props}
+      style={{borderLeftColor: colors.RED_500}}
+      text1Style={{
+        fontSize: 14,
+      }}
+      text2Style={{
+        fontSize: 12,
+      }}
+    />
+  ),
+};
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <RootNavigator />
+        <Toast config={toastConfig} />
       </NavigationContainer>
     </QueryClientProvider>
   );

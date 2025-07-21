@@ -17,6 +17,8 @@ import CustomMarker from '@/components/common/CustomMarker';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
 import useModal from '@/hooks/useModal';
 import useMoveMapView from '@/hooks/useMoveMapView';
+import Toast from 'react-native-toast-message';
+import MarkerModal from '@/components/map/MarkerModal';
 
 
 type Navigation = CompositeNavigationProp<
@@ -66,10 +68,18 @@ const MapHomeScreen() {
 
 const handlePressUserLocation = () => {
   if(isUserLocationError) {
-    return
+    Toast.show({
+      type: 'error',
+      text1: '위치 권한을 허용해주세요.',
+      position: 'bottom'
+    })
   }
   moveMapView(userLocation);
 }
+
+  const handlePressSearch = () => {
+    navigation.navigate(mapNavigations.SEARCH_LOCATION)
+  }
 
   return (
     <>
@@ -113,6 +123,10 @@ const handlePressUserLocation = () => {
         <View style={styles.buttonList}>
           <Pressable style={styles.mapButton} onPress={handlePressAddPost}>
             <MaterialIcons name="add" color={colors.WHITE} size={25} />
+          </Pressable>
+
+          <Pressable style={styles.mapButton} onPress={handlePressSearch}>
+            <MaterialIcons name="search" color={colors.WHITE} size={25} />
           </Pressable>
 
           <Pressable style={styles.mapButton} onPress={handlePressUserLocation}>
