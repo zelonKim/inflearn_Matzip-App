@@ -1,10 +1,12 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {MutationFunction, useMutation, useQuery} from '@tanstack/react-query';
 import {
   getAccessToken,
   getProfile,
+  kakaoLogin,
   logout,
   postLogin,
   postSignup,
+  ResponseToken,
 } from '../../api/auth';
 import {
   UseMutationCustomOptions,
@@ -24,9 +26,12 @@ function useSignup(mutationOptions?: UseMutationCustomOptions) {
   });
 }
 
-function useLogin(mutationOptions?: UseMutationCustomOptions) {
+function useLogin<T>(
+  loginAPI: MutationFunction<ResponseToken, T>,
+  mutationOptions?: UseMutationCustomOptions,
+) {
   return useMutation({
-    mutationFn: postLogin,
+    mutationFn: loginAPI,
     onSuccess: ({accessToken, refreshToken}) => {
       // 요청 성공 시, 콜백함수의 매개변수에 리턴 데이터가 담김.
       setEncryptStorage(storageKeys.REFRESH_TOKEN, refreshToken);
@@ -44,6 +49,14 @@ function useLogin(mutationOptions?: UseMutationCustomOptions) {
     },
     ...mutationOptions,
   });
+}
+
+function useEmailLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(postLogin, mutationOptions);
+}
+
+function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(kakaoLogin, mutationOptions);
 }
 
 function useGetRefreshToken() {
@@ -75,7 +88,7 @@ function useGetRefreshToken() {
   return {isSuccess, isError};
 }
 
-/////////////////
+
 
 function useGetProfile(queryOptions: UseQueryCustomOptions) {
   return useQuery({
@@ -107,7 +120,8 @@ function useAuth() {
     enabled: refreshTokenQuery.isSuccess, // 속성값이 true일 경우, 쿼리가 실행됨.
   });
   const isLogin = getProfileQuery.isSuccess;
-  const loginMutation = useLogin();
+  const loginMutation = useEmailLogin();
+  const kakaoLoginMutation = useKakaoLogin();
   const logoutMutation = useLogout();
 
   return {
@@ -116,6 +130,7 @@ function useAuth() {
     isLogin,
     getProfileQuery,
     logoutMutation,
+    kakaoLoginMutation,
   };
 }
 

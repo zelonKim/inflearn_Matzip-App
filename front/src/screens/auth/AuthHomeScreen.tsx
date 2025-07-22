@@ -1,12 +1,18 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
-import {Image, View, StyleSheet, Dimensions} from 'react-native';
+import {
+  Image,
+  View,
+  StyleSheet,
+  Dimensions,
+  Pressable,
+  Text,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthStackParamList} from '@/navigations/stack/AuthStackNavigator';
 import {authNavigations} from '@/constants/navigations';
 import CustomButton from '@/components/CustomButton';
-
-
+import {colors} from '@/constants';
 
 type AuthHomeScreenProps = StackScreenProps<
   AuthStackParamList,
@@ -25,15 +31,22 @@ function AuthHomeScreen({navigation}: AuthHomeScreenProps) {
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
-          label="로그인화면으로 이동"
-          size="medium"
-          onPress={() => navigation.navigate(authNavigations.LOGIN)}
+          label="카카오 로그인하기"
+          onPress={() => navigation.navigate(authNavigations.KAKAO)}
+          style={styles.kakaoButtonContainer}
+          textStyle={styles.kakaoButtonText}
+          icon={
+            <Ionicons name={'chatbubble-sharp'} color={'#181500'} size={16} />
+          }
         />
         <CustomButton
-          label="회원가입으로 이동"
-          variant="outlined"
-          onPress={() => navigation.navigate(authNavigations.SIGNUP)}
+          label="이메일 로그인하기"
+          onPress={() => navigation.navigate(authNavigations.LOGIN)}
         />
+
+        <Pressable onPress={() => navigation.navigate(authNavigations.SIGNUP)}>
+          <Text style={styles.emailText}>이메일로 가입하기</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -56,6 +69,18 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     gap: 10,
+  },
+  kakaoButtonContainer: {
+    backgroundColor: '#FEE503',
+  },
+  kakaoButtonText: {
+    color: '#181600',
+  },
+  emailText: {
+    textDecorationLine: 'underline',
+    fontWeight: '500',
+    padding: 10,
+    color: colors.BLACK,
   },
 });
 

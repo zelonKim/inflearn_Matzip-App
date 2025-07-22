@@ -19,6 +19,7 @@ import useModal from '@/hooks/useModal';
 import useMoveMapView from '@/hooks/useMoveMapView';
 import Toast from 'react-native-toast-message';
 import MarkerModal from '@/components/map/MarkerModal';
+import useLocationStore from '@/store/useLocationStore';
 
 
 type Navigation = CompositeNavigationProp<
@@ -31,7 +32,10 @@ const MapHomeScreen() {
   const navigation = useNavigation<Navigation>();
 
   const {userLocation, isUserLocationError} = useUserLocation();
-  const {selectLocation, setSelectLocation} = useState<LatLng | null>();
+
+  const {selectLocation, setSelectLocation} = useLocationStore();
+
+  
   const {markerId, setMarkerId} = useState<number | null>(null);
 
   const {data:markers = []} = useGetMarkers();

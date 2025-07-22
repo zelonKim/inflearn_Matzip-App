@@ -1,12 +1,34 @@
 import { colors } from '@/constants';
+import useLocationStore from '@/store/useLocationStore';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {Dimensions, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import { LatLng } from 'react-native-maps';
 
 interface SearchRegionResultProps {
   regionInfo: RegionInfo[];
 }
 
 function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
+
+  const navigation = useNavigation()
+
+  const {setMoveLocation, setSelectLocation} = useLocationStore();
+
+  const handlePressRegionInfo = (latitude: string, longitude: string) => {
+    const regionLocation = {
+      latitude: Number(latitude),
+      longidue: Number(longitude)
+    }
+    moveToMapScreen(regionLocation)
+  }
+
+  const moveToMapScreen = (regionLocation:LatLng) => {
+    navigation.goBack();
+    setMoveLocation(regionLocation)
+    setSelectLocation(regionLocation)
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -19,7 +41,9 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
             style={[
               styles.itemBorder,
               index === regionInfo.length - 1 && styles.noItemBorder,
-            ]}>
+            ]}
+            onPress={() => handlePressRegionInfo(info.y, info.x)}
+            >
             <View style={styles.placeNameContainer}>
               <Octicons name="location" size={15} color={colors.PINK_700} />
               <Text
@@ -30,7 +54,7 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
               </Text>
             </View>
             <View style={styles.categoryContainer}>
-              <Text style={styles.disatanceText}>{info.distance}</Text>
+              <Text style={styles.disatanceText}>{Number(info.distance / 1000).toFixed(2)}km</Text>
               <Text style={styles.subInfoText}>{info.category_name}</Text>
             </View>
             <Text style={styles.subInfoText}>{info.road_address_name}</Text>

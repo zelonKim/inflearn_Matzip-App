@@ -10,7 +10,16 @@ type RegionResponse = {
 
 function useSearchLocation(keyword: string, location: LatLng) {
   const [regionInfo, setRegionInfo] = useState<RegionInfo[]>([]);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const [pageParam, setPageParam] = useState(1);
+
+  const fetchNextPage = () => {
+    setPageParam(prev => prev + 1);
+  };
+
+  const fetchPrevPage = () => {
+    setPageParam(prev => prev - 1);
+  };
 
   useEffect(() => {
     (async () => {
@@ -23,14 +32,16 @@ function useSearchLocation(keyword: string, location: LatLng) {
             },
           },
         );
+        setHasNextPage(!data.meta.is_end); // 카카오맵 API 응답 데이터가 마지막인지 여부를 반환함.
         setRegionInfo(data.documents);
       } catch (err) {
         setRegionInfo([]);
       }
     })();
-  }, [keyword]);
+    keyword === '' && setPageParam(1);
+  }, [keyword, location, pageParam]);
 
-  return {regionInfo};
+  return {regionInfo, pageParam, fetchNextPage, fetchPrevPage, hasNextPage};
 }
 
 export default useSearchLocation;

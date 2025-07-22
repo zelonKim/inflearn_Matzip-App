@@ -9,7 +9,8 @@ function SearchLocationScreen({}) {
   const [keyword, setKeyword] = useState<string>('');
   const {userLocation} = useUserLocation();
 
-  const {regionInfo} = useSearchLocation(keyword, userLocation);
+  const {regionInfo, pageParam, fetchNextPage, fetchPrevPage, hasNextPage} =
+    useSearchLocation(keyword, userLocation);
 
   const handleChangeKeyword = (text: string) => {
     setKeyword(text);
@@ -25,6 +26,7 @@ function SearchLocationScreen({}) {
         onSubmit={() => Keyboard.dismiss()} // 검색을 완료했을때 화면 하단의 키보드를 닫아줌.
       />
       <SearchRegionResult regionInfo={regionInfo} />
+      <Pagination />
     </View>
   );
 }
