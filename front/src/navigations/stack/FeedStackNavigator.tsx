@@ -17,7 +17,7 @@ export type FeedStackParamList = {
 
 const Stack = createStackNavigator<FeedStackParamList>();
 
-function FeedStackNavigator() {
+function SettingStackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -69,4 +69,4 @@ function FeedStackNavigator() {
   );
 }
 
-export default FeedStackNavigator;
+export default SettingStackNavigator;

@@ -1,5 +1,6 @@
 import {MutationFunction, useMutation, useQuery} from '@tanstack/react-query';
 import {
+  appleLogin,
   getAccessToken,
   getProfile,
   kakaoLogin,
@@ -59,6 +60,10 @@ function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
   return useLogin(kakaoLogin, mutationOptions);
 }
 
+function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(appleLogin, mutationOptions);
+}
+
 function useGetRefreshToken() {
   const {isSuccess, data, isError} = useQuery({
     queryFn: getAccessToken, // queryFn속성에 쿼리함수를 지정함.
@@ -88,8 +93,6 @@ function useGetRefreshToken() {
   return {isSuccess, isError};
 }
 
-
-
 function useGetProfile(queryOptions: UseQueryCustomOptions) {
   return useQuery({
     queryKey: [queryKeys.AUTH, queryKeys.GET_PROFILE],
@@ -104,9 +107,7 @@ function useLogout(mutationOptions?: UseMutationCustomOptions) {
     onSuccess: () => {
       removeHeader('Authorization');
       removeEncryptStorage(storageKeys.REFRESH_TOKEN);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({queryKey: [queryKeys.AUTH]});
+      queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
     },
     ...mutationOptions,
   });
@@ -122,6 +123,7 @@ function useAuth() {
   const isLogin = getProfileQuery.isSuccess;
   const loginMutation = useEmailLogin();
   const kakaoLoginMutation = useKakaoLogin();
+  const appleLoginMutation = useAppleLogin();
   const logoutMutation = useLogout();
 
   return {
@@ -131,6 +133,7 @@ function useAuth() {
     getProfileQuery,
     logoutMutation,
     kakaoLoginMutation,
+    appleLoginMutation,
   };
 }
 
