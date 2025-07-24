@@ -1,6 +1,8 @@
 import {MutationFunction, useMutation, useQuery} from '@tanstack/react-query';
 import {
   appleLogin,
+  deleteAccount,
+  editProfile,
   getAccessToken,
   getProfile,
   kakaoLogin,
@@ -101,6 +103,19 @@ function useGetProfile(queryOptions: UseQueryCustomOptions) {
   });
 }
 
+function useUpdateProfile(mutationOptions?: UseMutationCustomOptions) {
+  return useMutation({
+    mutationFn: editProfile,
+    onSuccess: newProfile => {
+      queryClient.setQueryData(
+        [queryKeys.AUTH, queryKeys.GET_PROFILE],
+        newProfile,
+      );
+    },
+    ...mutationOptions,
+  });
+}
+
 function useLogout(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
     mutationFn: logout,
@@ -109,6 +124,13 @@ function useLogout(mutationOptions?: UseMutationCustomOptions) {
       removeEncryptStorage(storageKeys.REFRESH_TOKEN);
       queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
     },
+    ...mutationOptions,
+  });
+}
+
+function useMutateDeleteAccoount(mutationOptions?: UseMutationCustomOptions) {
+  return useMutation({
+    mutationFn: deleteAccount,
     ...mutationOptions,
   });
 }
@@ -125,6 +147,10 @@ function useAuth() {
   const kakaoLoginMutation = useKakaoLogin();
   const appleLoginMutation = useAppleLogin();
   const logoutMutation = useLogout();
+  const profileMutation = useUpdateProfile();
+  const deleteAccountMutation = useMutateDeleteAccoount({
+    onSuccess: () => logoutMutation.mutate(null)
+  });
 
   return {
     signupMutation,
@@ -134,6 +160,8 @@ function useAuth() {
     logoutMutation,
     kakaoLoginMutation,
     appleLoginMutation,
+    profileMutation,
+    deleteAccountMutation,
   };
 }
 

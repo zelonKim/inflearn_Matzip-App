@@ -14,6 +14,7 @@ import SettingHeaderLeft from '@/components/setting/SettingHeaderLeft';
 export type SettingStackParamList = {
   [settingNavigatons.SETTING_HOME]: undefined;
   [settingNavigatons.EDIT_PROFILE]: undefined;
+  [settingNavigatons.DELETE_ACCOUNT]: undefined;
 };
 
 const Stack = createStackNavigator<SettingStackParamList>();
@@ -47,6 +48,17 @@ function SettingStackNavigator() {
         component={EditProfileScreen}
         options={{
           headerTitle: '프로필 수정',
+          cardStyle: {
+            backgroundColor: colors.WHITE,
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name={settingNavigatons.DELETE_ACCOUNT}
+        component={DeleteAccountScreen}
+        options={{
+          headerTitle: '회원 탈퇴',
           cardStyle: {
             backgroundColor: colors.WHITE,
           },

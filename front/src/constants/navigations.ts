@@ -32,6 +32,7 @@ const feedTabNavigations = {
 const settingNavigatons = {
   SETTING_HOME: 'SettingHome',
   EDIT_PROFILE: 'EditProfile',
+  DELETE_ACCOUNT: 'DeleteAccount',
 } as const;
 
 export {
