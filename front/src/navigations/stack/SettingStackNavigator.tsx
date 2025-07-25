@@ -10,11 +10,14 @@ import ImageZoomScreen from '@/components/feed/ImageZoomScreen';
 import SettingHomeScreen from '@/screens/setting/SettingHomeScreen';
 import EditProfileScreen from '@/screens/setting/EditProfileScreen';
 import SettingHeaderLeft from '@/components/setting/SettingHeaderLeft';
+import DeleteAccountScreen from '@/components/setting/DeleteAccountScreen';
+import EditCategoryScreen from '@/components/setting/EditCategoryScreen';
 
 export type SettingStackParamList = {
   [settingNavigatons.SETTING_HOME]: undefined;
   [settingNavigatons.EDIT_PROFILE]: undefined;
   [settingNavigatons.DELETE_ACCOUNT]: undefined;
+  [settingNavigatons.EDIT_CATEGORY]: undefined;
 };
 
 const Stack = createStackNavigator<SettingStackParamList>();
@@ -59,6 +62,17 @@ function SettingStackNavigator() {
         component={DeleteAccountScreen}
         options={{
           headerTitle: '회원 탈퇴',
+          cardStyle: {
+            backgroundColor: colors.WHITE,
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name={settingNavigatons.DELETE_ACCOUNT}
+        component={EditCategoryScreen}
+        options={{
+          headerTitle: '카테고리 설정',
           cardStyle: {
             backgroundColor: colors.WHITE,
           },

@@ -1,3 +1,5 @@
+import { Category } from "@/types/domain";
+
 type UserInformation = {
   email: string;
   password: string;
@@ -67,5 +69,17 @@ function validateEditProfile(values: {nickname: string}) {
 
 }
 
+function validateCategory(values: Category) {
+  const errors = {
+    RED: '',
+    GREEN:'',
+    YELLOW: '',
+    BLUE: '',
+    PURPLE: ''
+  };
 
-export {validateLogin, validateSignup, validateAddPost, validateEditProfile};
+  return errors;
+}
+
+
+export {validateLogin, validateSignup, validateAddPost, validateEditProfile, validateCategory};

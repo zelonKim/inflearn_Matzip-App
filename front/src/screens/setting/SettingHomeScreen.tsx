@@ -1,3 +1,4 @@
+import {settingNavigatons} from '@/constants';
 import useAuth from '@/hooks/queries/useAuth';
 import {SettingStackParamList} from '@/navigations/stack/SettingStackNavigator';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -12,11 +13,15 @@ function SettingHomeScreen({navigation}: SettingHomeScreenProps) {
   const {logoutMutation} = useAuth();
 
   const handlePressEditProfile = () => {
-    navigation.navigate(settingNavigations.EDIT_PROFILE);
+    navigation.navigate(settingNavigatons.EDIT_PROFILE);
   };
 
   const handlePressLogout = () => {
     logoutMutation.mutate(null);
+  };
+
+  const handlePressEditCategory = () => {
+    navigation.navigate(settingNavigatons.EDIT_CATEGORY);
   };
 
   return (
@@ -24,7 +29,10 @@ function SettingHomeScreen({navigation}: SettingHomeScreenProps) {
       <ScrollView>
         <View style={styles.space} />
         <SettingItem title="프로필 수정" onPres={handlePressEditProfile} />
-        <SettingItem title="마커 카테고리 설정" />
+        <SettingItem
+          title="마커 카테고리 설정"
+          onPress={handlePressEditCategory}
+        />
         <SettingItem
           title="로그아웃"
           onPress={handlePressLogout}

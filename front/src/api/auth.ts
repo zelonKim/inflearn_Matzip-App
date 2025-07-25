@@ -32,10 +32,6 @@ const postLogin = async ({
   return data;
 };
 
-
-
-
-
 type ResponseProfile = Profile & Category;
 
 const getProfile = async (): Promise<ResponseProfile> => {
@@ -53,8 +49,17 @@ const editProfile = async (body: RequestProfile): Promise<ResponseProfile> => {
   return data;
 };
 
+
+
+
+
 const deleteAccount = async () => {
   await axiosInstance.delete('/auth/me');
+};
+
+const editCategory = async (body: Category): Promise<ResponseProfile> => {
+  const {data} = await axiosInstance.patch('/auth/category', body);
+  return data;
 };
 
 
@@ -105,6 +110,7 @@ export {
   appleLogin,
   editProfile,
   deleteAccount,
+  editCategory,
 };
 export type {
   RequestUser,
