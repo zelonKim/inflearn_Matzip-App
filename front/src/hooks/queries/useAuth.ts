@@ -29,6 +29,7 @@ function useSignup(mutationOptions?: UseMutationCustomOptions) {
     mutationFn: postSignup, // 리액트 쿼리 버전5에서는 객체내의 mutationFn속성에 뮤테이션 함수를 지정해야함.
     // onError: (error) => error.response.data.message // 요청 실패 시, 콜백함수의 매개변수에 에러객체가 담김.
     ...mutationOptions,
+    throwOnError: error => Number(error.response?.status) >= 500, // 서버 에러일 경우, 캐치되도록 함.
   });
 }
 
@@ -70,7 +71,7 @@ function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
 }
 
 function useGetRefreshToken() {
-  const {isSuccess, data, isError} = useQuery({
+  const {isSuccess, data, isError, isPending} = useQuery({
     queryFn: getAccessToken, // queryFn속성에 쿼리함수를 지정함.
     queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN], // queryKey속성에 쿼리키를 지정함.
     staleTime: numbers.ACCESS_TOKEN_REFRESH_TIME,
@@ -95,7 +96,7 @@ function useGetRefreshToken() {
     }
   }, [isError]);
 
-  return {isSuccess, isError};
+  return {isSuccess, isError, isPending};
 }
 
 function useUpdateProfile(mutationOptions?: UseMutationCustomOptions) {
@@ -183,6 +184,7 @@ function useAuth() {
   });
 
   const categoryMutation = useMutateCategory();
+  const isLoginLoading = refreshTokenQuery.isPending;
 
   return {
     signupMutation,

@@ -30,6 +30,8 @@ function FeedList({}) {
     }
   };
 
+  
+
   return (
     <FlatList
       data={posts?.pages.flat()} // flat(): 배열의 깊이를 한 단계 평탄화시킴.

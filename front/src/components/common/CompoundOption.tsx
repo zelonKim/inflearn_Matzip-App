@@ -1,4 +1,5 @@
 import { colors } from '@/constants';
+import useThemeStore from '@/store/useThemeStore';
 import { createContext, PropsWithChildren, ReactNode, useContext } from 'react';
 import {GestureResponderEvent, Modal, ModalProps, Pressable, PressableProps, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 
@@ -54,6 +55,8 @@ function Background({children}:PropsWithChildren) {
     )
 }
 
+
+
 function Container({children}:PropsWithChildren) {
     return <View style={styles.optionContainer}>{children}</View>
 }
@@ -62,18 +65,25 @@ function Container({children}:PropsWithChildren) {
 interface ButtonProps extends PressableProps {
     children: ReactNode;
     isDanger?: boolean;
+    isChecked?: boolean;
 }
 
-function Button({children, isDanger=false, ...props}) {
+function Button({children, isDanger=false, isChecked=false, ...props}):ButtonProps {
+    const {theme} = useThemeStore();
+    const styles = styling(theme);
+    
     return(
         <Pressable style={({pressed}) => [
             pressed && styles.optionButtonPressed,
             styles.optionButton,
         ]} {...props}>
             <Text style={[styles.optionText, isDanger && styles.dangerText]}>{children}</Text>
+            {isChecked && <Ionicons name='checkmark' size={20} color={colors.BLUE_500} />}
         </Pressable>
     )
 }
+
+
 
 function Title({children}: PropsWithChildren) {
     return (
@@ -83,9 +93,55 @@ function Title({children}: PropsWithChildren) {
     )
 }
 
+
+
 function Divider() {
     return <View style={styles.border} />
 }
+
+
+
+
+
+interface CheckBoxProps extends PressableProps {
+    children: ReactNode;
+    icon?: ReactNode;
+    isChecked?: boolean;
+}
+
+function CheckBox({children, icon, isChecked=false, ...props}:CheckBoxProps) {
+    return (
+    <Pressable style={({pressed}) => [
+        pressed ? styles.optionButtonPressed,
+        styles.checkBoxContainer,
+    ]}> 
+    <Ionicons 
+        name={`checkmark-circle${isChecked ? '' : '-outline'}`}
+        size={22}
+        color={colors[theme].BLUE_500}
+    />
+        {icon}
+        <Text style={styles.checkBoxText}> {children} </Text>
+    </ Pressable>
+)
+}
+
+
+
+interface FilterProps extends PressableProps {
+    children: ReactNode;
+    isSelected?: boolean;
+}
+
+function Filter({children, isSelected, ...props}:FilterProps) {
+    return (
+        <Pressable style={styles.filterContainer} {...props} >
+            <Text style={isSelected ? styles.filterSelectedText : styles.filterText}>{children}</Text>
+            <MaterialIcons name="keyboard-arrow-down" size={22} color={isSelected ? colors[theme].BLUE_500 : colors[theme].GRAY_300} />
+        </Pressable>
+    )
+}
+
 
 
 
@@ -94,7 +150,9 @@ export const CompoundOption = Object.assign(OptionMain, {
     Button,
     Title,
     Divider,
-    Background
+    Background,
+    CheckBox,
+    Filter
 })
 
 
@@ -142,5 +200,32 @@ const styles = StyleSheet.create({
     border: {
         borderBottomColor: colors.GRAY_200,
         borderBottomWidth: 1
+    },
+    checkBoxContainer: {
+        flexDirection: 'row',
+        alignItesm: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        gap: 10,
+    },
+    checkBoxText: {
+        color: colors[theme].BLACK,
+        fontSize: 15,
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        gap: 5
+    },
+    filterText: {
+        color: colors[theme].GRAY_300,
+        fontSize: 15,
+        fontWeight: '500',
+    },
+    filterSelectedText: {
+        color: colors[theme].BLUE_500,
+        fontSize: 15,
+        fontWeight: '500',
     }
 })

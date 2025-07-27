@@ -6,6 +6,7 @@ import {
   QueryKey,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
+  useSuspenseInfiniteQuery,
 } from '@tanstack/react-query';
 
 const useGetInfinitePosts = (
@@ -18,7 +19,7 @@ const useGetInfinitePosts = (
     number
   >,
 ) => {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({ // 버전 5에서의 서스펜스
     // 페이징 기능이 추가된 useQuery()훅
     queryFn: ({pageParam}) => getPosts(pageParam),
     queryKey: [queryKeys.POST, queryKeys.GET_POSTS],
@@ -27,6 +28,12 @@ const useGetInfinitePosts = (
       const lastPost = lastPage[lastPage.length - 1];
       return lastPost ? allPages.length + 1 : undefined;
     },
+    
+    // suspense: true  // 버전 4에서의 서스펜스
+
+    throwOnError: true, // 버전 5에서의 에러 바운더리
+    // useErrorBoundary: true  // 버전 4에서의 에러 바운더리
+    
     ...queryOptions,
   });
 };

@@ -20,6 +20,12 @@ import useMoveMapView from '@/hooks/useMoveMapView';
 import Toast from 'react-native-toast-message';
 import MarkerModal from '@/components/map/MarkerModal';
 import useLocationStore from '@/store/useLocationStore';
+import useThemeStore from '@/store/useThemeStore';
+import { ThemeMode } from '@/types/common';
+import MapLegend from './MapLegend';
+import useLegendStorage from '@/hooks/useLegendStorage';
+import MarkerFilterOption from './MarkerFilterOption';
+import useMarkerFilter from '@/hooks/useMarkerFilter';
 
 
 type Navigation = CompositeNavigationProp<
@@ -28,6 +34,10 @@ type Navigation = CompositeNavigationProp<
 >;
 
 const MapHomeScreen() {
+  const {theme} = useThemeStore();
+
+  const styles = styling(theme)
+
   const inset = useSafeAreaInsets();
   const navigation = useNavigation<Navigation>();
 
@@ -35,14 +45,19 @@ const MapHomeScreen() {
 
   const {selectLocation, setSelectLocation} = useLocationStore();
 
-  
   const {markerId, setMarkerId} = useState<number | null>(null);
 
-  const {data:markers = []} = useGetMarkers();
+  const markerFilter = useMarkerFilter();
+
+  const {data:markers = []} = useGetMarkers({
+    select: markerFilter.transformFilteredMarker
+  });
 
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
 
   const markerModal = useModal();
+
+  const legend = useLegendStorage()
 
   usePermission('LOCATION');
 
@@ -121,30 +136,39 @@ const handlePressUserLocation = () => {
 
         <Pressable style={[styles.drawerButton, {top: inset.top || 20}]} 
             onPress={ () => navigation.openDrawer()}>
-          <Ionicons name='menu' color={colors.WHITE} size={25} />
+          <Ionicons name='menu' color={colors[theme].WHITE} size={25} />
         </Pressable>
         
         <View style={styles.buttonList}>
           <Pressable style={styles.mapButton} onPress={handlePressAddPost}>
-            <MaterialIcons name="add" color={colors.WHITE} size={25} />
+            <MaterialIcons name="add" color={colors[theme].WHITE} size={25} />
           </Pressable>
 
           <Pressable style={styles.mapButton} onPress={handlePressSearch}>
-            <MaterialIcons name="search" color={colors.WHITE} size={25} />
+            <MaterialIcons name="search" color={colors[theme].WHITE} size={25} />
           </Pressable>
 
           <Pressable style={styles.mapButton} onPress={handlePressUserLocation}>
-            <MaterialIcons name="my-location" color={colors.WHITE} size={25} />
+            <MaterialIcons name="options-outline" color={colors[theme].WHITE} size={25} />
+          </Pressable>
+
+          <Pressable style={styles.mapButton} onPress={handlePressUserLocation}>
+            <MaterialIcons name="my-location" color={colors[theme].WHITE} size={25} />
           </Pressable>
         </View>
 
         <MarkerModal markerId={markerId} isVisible={markerModal.isVisible} hide={markerModal.hide}/>
+        
+        <MarkerFilterOption isVisible={filterOption.isVisible} hideOption={filterOption.hide} />
+          
+          {legend.isVisible && <MapLegend />}
+          
     </>
   )
 }
 
 
-const styles = StyleSheet.create({
+const styling = (theme:ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -154,10 +178,10 @@ const styles = StyleSheet.create({
     top: 20,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    backgroundColor: colors.PINK_700,
+    backgroundColor: colors[theme].PINK_700,
     borderTopRightRadius: 50,
     borderBottomRightRadius: 50,
-    shadowColor: colors.BLACK,
+    shadowColor: colors[theme].UNCHANGE_BLACK,
     shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.5,
     elevation: 4
