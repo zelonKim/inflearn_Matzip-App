@@ -1,380 +1,99 @@
-## Matzip Server
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+</p>
 
-> Inflearn, Kyo
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## 실행
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-1. 의존성 모듈 설치
+## Description
 
-프로젝트 위치에서 명령어를 실행합니다.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-```
-npm install
-```
+## Project setup
 
-2. 환경 변수 설정
-
-`[YOUR_USERNAME]` 부분 추가하여 `.env` 파일을 server 폴더 루트에 추가해주세요.
-
-```
-PORT=3030
-DB_USERNAME=[YOUR_USERNAME]
-DB_PASSWORD=postgres
-DB_DATABASE=matzip-app
-DB_HOST=localhost
-JWT_SECRET=SecretMatzip
-JWT_ACCESS_TOKEN_EXPIRATION=30m
-JWT_REFRESH_TOKEN_EXPIRATION=30d
-```
-
-3. 개발 환경 실행
-
-```
-npm run start:dev
-```
-
-<br>
-
-# Domain
-
-```ts
-type MarkerColor = 'RED' | 'YELLOW' | 'GREEN' | 'BLUE' | 'PURPLE';
-
-type Category = {
-  [key in MarkerColor]: string;
-};
-
-interface ImageUri {
-  id?: number;
-  uri: string;
-}
-
-interface Marker {
-  id: number;
-  latitude: number;
-  longitude: number;
-  color: MarkerColor;
-  score: number;
-}
-
-interface Post extends Marker {
-  title: string;
-  address: string;
-  date: Date | string;
-  description: string;
-}
-
-interface Profile {
-  id: number;
-  email: string;
-  nickname: string | null;
-  imageUri: string | null;
-  kakaoImageUri: string | null;
-  loginType: 'email' | 'kakao' | 'apple';
-}
+```bash
+$ npm install
 ```
 
-# API
+## Compile and run the project
 
-## Auth
+```bash
+# development
+$ npm run start
 
-#### POST /auth/signup
+# watch mode
+$ npm run start:dev
 
-- requestBody
-
-```
-{
-    email: string
-    password: string
-}
+# production mode
+$ npm run start:prod
 ```
 
-#### POST /auth/signin
+## Run tests
 
-- requestBody
+```bash
+# unit tests
+$ npm run test
 
-```js
-{
-  email: string;
-  password: string;
-}
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
 ```
 
-- responseBody
+## Deployment
 
-```js
-{
-  accessToken: string;
-  refreshToken: string;
-}
+When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+
+If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+
+```bash
+$ npm install -g mau
+$ mau deploy
 ```
 
-#### GET /auth/refresh
+With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-- header
+## Resources
 
-```js
-Authorization: `Bearer ${refreshToken}`;
-```
+Check out a few resources that may come in handy when working with NestJS:
 
-- responseBody
+- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
+- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
+- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
+- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
+- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
+- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
+- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
+- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-```js
-{
-  accessToken: string;
-  refreshToken: string;
-}
-```
+## Support
 
-#### GET /auth/me (getProfile)
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-- responseBody
+## Stay in touch
 
-```ts
-type ResponseProfile = Profile & Category;
-```
+- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-#### PATCH /auth/me (editProfile)
+## License
 
-- requestBody
-
-```ts
-type RequestProfile = Omit<
-  Profile,
-  'id' | 'email' | 'kakaoImageUri' | 'loginType'
->;
-```
-
-- responseBody
-
-```ts
-type ResponseProfile = Profile & Category;
-```
-
-#### POST /auth/logout
-
-#### DELETE /auth/me
-
-#### PATCH /auth/category
-
-- requestBody
-
-```ts
-type Category
-```
-
-- responseBody
-
-```ts
-type ResponseProfile = Profile & Category;
-```
-
-#### POST /auth/oauth/kakao
-
-- requestBody
-
-```js
-{
-  token: string;
-}
-```
-
-- responseBody
-
-```js
-{
-  accessToken: string;
-  refreshToken: string;
-}
-```
-
-#### POST /auth/oauth/apple
-
-- requestBody
-
-```js
-{
-  identityToken: string;
-  appId: string;
-  nickname: string | null;
-}
-```
-
-- responseBody
-
-```js
-{
-  accessToken: string;
-  refreshToken: string;
-}
-```
-
-<br>
-
-## Marker & Post
-
-#### GET /markers/my
-
-- responseBody
-
-```ts
-Marker[]
-```
-
-#### GET /posts/:id
-
-- param
-
-```ts
-{
-  id: number;
-}
-```
-
-- requestBody
-
-```ts
-// type ResponsePost = Post & { images: ImageUri[] };
-
-type ResponseSinglePost = ResponsePost & { isFavorite: boolean };
-```
-
-#### DELETE /posts/:id
-
-- param
-
-```ts
-{
-  id: number;
-}
-```
-
-#### GET /posts/my
-
-- query
-
-```js
-{
-  page: number;
-}
-```
-
-- responseBody
-
-```js
-// type ResponsePost = Post & { images: ImageUri[] };
-ResponsePost[];
-```
-
-#### GET /posts/my/search
-
-- query
-
-```js
-{
-  query: string;
-  page: number;
-}
-```
-
-- responseBody
-
-```js
-// type ResponsePost = Post & { images: ImageUri[] };
-ResponsePost[];
-```
-
-#### POST /posts
-
-- requestBody
-
-```ts
-type RequestCreatePost = Omit<Post, 'id'> & { imageUris: ImageUri[] };
-```
-
-#### PATCH /post/:id
-
-- param
-
-```ts
-{
-  id: number;
-}
-```
-
-- requestBody
-
-```ts
-type RequestUpdatePost = {
-  id: number;
-  body: Omit<Post, 'id' | 'longitude' | 'latitude' | 'address'> & {
-    imageUris: ImageUri[];
-  };
-};
-```
-
-- responseBody
-
-```ts
-type ResponseSinglePost = ResponsePost & { isFavorite: boolean };
-```
-
-#### GET /posts (getCalendarPosts)
-
-- query
-
-```ts
-{
-  year: number;
-  month: number;
-}
-```
-
-- responseBody
-
-```ts
-// type CalendarPost = {
-//   id: number;
-//   title: string;
-//   address: string;
-// };
-
-type ResponseCalendarPost = Record<number, CalendarPost[]>;
-```
-
-#### GET /favorites/my
-
-- query
-
-```ts
-{
-  page: number;
-}
-```
-
-#### POST /favorites/:id
-
-- param
-
-```ts
-{
-  id: number;
-}
-```
-
-- responseBody
-
-```ts
-{
-  id: number;
-}
-```
-
-<br>
-
-## Image
-
-#### POST /images
-
-- requestBody : `FormData`
-- responseBody : `string[]`
+Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

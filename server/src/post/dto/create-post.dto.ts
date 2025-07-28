@@ -1,14 +1,8 @@
-import {
-  IsArray,
-  IsDateString,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { MarkerColor } from '../marker-color.enum';
 
 export class CreatePostDto {
-  @IsNotEmpty()
+  @IsNotEmpty() // 유효성 검사
   latitude: number;
 
   @IsNotEmpty()
