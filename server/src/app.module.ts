@@ -3,6 +3,7 @@ import { PostController } from './post/post.controller';
 import { PostService } from './post/post.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from './post/post.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,8 +18,8 @@ import { PostModule } from './post/post.module';
       synchronize: true,
     }),
     PostModule,
+    AuthModule,
   ],
-  controllers: [PostController],
-  providers: [PostService],
+  providers: [],
 })
 export class AppModule {}
