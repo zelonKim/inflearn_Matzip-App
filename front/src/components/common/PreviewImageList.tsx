@@ -3,14 +3,8 @@ import {FeedStackParamList} from '@/navigations/stack/FeedStackNavigator';
 import {ImageUri} from '@/types/domain';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {
-  Image,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {FastImage} from 'react-native-fast-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface PreviewImageListProps {
@@ -46,15 +40,11 @@ const PreviewImageList = ({
               <Pressable
                 onPress={() => handlePressImage(index)}
                 style={styles.imageContainer}>
-                <Image
+                <FastImage
                   key={index}
-                  resizeMode="contain"
+                  resizeMode={FastImage.resizeMode.contain}
                   source={{
-                    uri: `${
-                      Platform.OS === 'ios'
-                        ? 'http://localhost:3030'
-                        : 'http://10.0.2.2:3030'
-                    }/${uri}`,
+                    uri: uri,
                   }}
                   style={styles.image}
                 />

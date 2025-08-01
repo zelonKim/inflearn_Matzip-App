@@ -1,0 +1,53 @@
+diff --git a/node_modules/react-native-map-clustering/lib/ClusteredMapView.js b/node_modules/react-native-map-clustering/lib/ClusteredMapView.js
+index 8c7820c..2de764b 100644
+--- a/node_modules/react-native-map-clustering/lib/ClusteredMapView.js
++++ b/node_modules/react-native-map-clustering/lib/ClusteredMapView.js
+@@ -136,9 +136,9 @@ const ClusteredMapView = forwardRef(
+         const bBox = calculateBBox(region);
+         const zoom = returnMapZoom(region, bBox, minZoom);
+         const markers = superCluster.getClusters(bBox, zoom);
+-        if (animationEnabled && Platform.OS === "ios") {
+-          LayoutAnimation.configureNext(layoutAnimationConf);
+-        }
++        // if (animationEnabled && Platform.OS === "ios") {
++        //   LayoutAnimation.configureNext(layoutAnimationConf);
++        // }
+         if (zoom >= 18 && markers.length > 0 && clusterChildren) {
+           if (spiralEnabled) updateSpiderfier(true);
+         } else {
+diff --git a/node_modules/react-native-map-clustering/lib/ClusteredMarker.js b/node_modules/react-native-map-clustering/lib/ClusteredMarker.js
+index 73700ba..737c354 100755
+--- a/node_modules/react-native-map-clustering/lib/ClusteredMarker.js
++++ b/node_modules/react-native-map-clustering/lib/ClusteredMarker.js
+@@ -26,21 +26,9 @@ const ClusteredMarker = ({
+       onPress={onPress}
+       tracksViewChanges={tracksViewChanges}
+     >
+-      <TouchableOpacity
+-        activeOpacity={0.5}
++      <View
+         style={[styles.container, { width, height }]}
+       >
+-        <View
+-          style={[
+-            styles.wrapper,
+-            {
+-              backgroundColor: clusterColor,
+-              width,
+-              height,
+-              borderRadius: width / 2,
+-            },
+-          ]}
+-        />
+         <View
+           style={[
+             styles.cluster,
+@@ -65,7 +53,7 @@ const ClusteredMarker = ({
+             {points}
+           </Text>
+         </View>
+-      </TouchableOpacity>
++    </View>
+     </Marker>
+   );
+ };

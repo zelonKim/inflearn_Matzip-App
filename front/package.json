@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.4.1",
@@ -20,6 +21,7 @@
     "@react-navigation/stack": "^7.4.2",
     "@tanstack/react-query": "^5.81.5",
     "axios": "^1.10.0",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-error-boundary": "^6.0.0",
     "react-native": "0.72.6",
@@ -27,8 +29,10 @@
     "react-native-config": "^1.5.5",
     "react-native-date-picker": "^5.0.13",
     "react-native-encrypted-storage": "^4.0.3",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.26.0",
     "react-native-image-crop-picker": "^0.50.1",
+    "react-native-map-clustering": "^4.0.0",
     "react-native-maps": "^1.24.3",
     "react-native-permissions": "^5.4.1",
     "react-native-reanimated": "^3.18.0",

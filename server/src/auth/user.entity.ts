@@ -1,10 +1,13 @@
+import { Favorite } from 'src/favorite/favorite.entity';
 import { MarkerColor } from 'src/post/marker-color.enum';
+import { Post } from 'src/post/post.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -60,4 +63,10 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   hashedRefreshToken?: string;
+
+  @OneToMany(() => Post, (post) => post.user, { eager: false }) // 일대다 관계
+  post: Post[]; // 한 명의 유저는 여러개의 게시글을 포스트할 수 있음.
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  favorites: Favorite[];
 }

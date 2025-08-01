@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +14,9 @@ import * as bcrypt from 'bcryptjs';
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { EditProfileDto } from 'src/post/dto/edit-profile.dto';
+import { MarkerColor } from 'src/post/marker-color.enum';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -77,8 +82,6 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-
-  
   private async updateHashedRefreshToken(id: number, refreshToken: string) {
     const salt = await bcrypt.genSalt();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
@@ -102,5 +105,153 @@ export class AuthService {
     await this.updateHashedRefreshToken(user.id, refreshToken);
 
     return { accessToken, refreshToken };
+  }
+
+
+
+
+
+
+
+  getProfile(user: User) {
+    const { password, hashedRefreshToken, ...rest } = user;
+    return { ...rest };
+  }
+
+  async editProfile(editProfileDto: EditProfileDto, user: User) {
+    const profile = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId: user.id })
+      .getOne();
+
+    if (!profile) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
+    }
+
+    const { nickname, imageUri } = editProfileDto;
+    profile.nickname = nickname;
+    profile.imageUri = imageUri;
+
+    try {
+      await this.userRepository.save(profile);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        '프로필 수정 도중 에러가 발생했습니다.',
+      );
+    }
+  }
+
+  async deleteRefreshToken(user: User) {
+    try {
+      await this.userRepository.update(user.id, { hashedRefreshToken: null });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteAcoount(user: User) {
+    try {
+      await this.userRepository
+        .createQueryBuilder('user')
+        .delete()
+        .from(User)
+        .where('id = :id', { id: user.id })
+        .execute();
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(
+        '탈퇴할 수 없습니다. 남은 데이터가 존재하는지 확인해주세요.',
+      );
+    }
+  }
+
+  async updateCategory(
+    categories: Record<keyof MarkerColor, string>,
+    user: User,
+  ) {
+    const { RED, YELLOW, BLUE, GREEN, PURPLE } = MarkerColor;
+
+    if (
+      !Object.keys(categories).every((color: MarkerColor) =>
+        [RED, YELLOW, BLUE, GREEN, PURPLE].includes(color),
+      )
+    ) {
+      throw new BadRequestException('유효하지 않은 카테고리입니다.');
+    }
+
+    user[RED] = categories[RED];
+    user[YELLOW] = categories[YELLOW];
+    user[BLUE] = categories[BLUE];
+    user[GREEN] = categories[GREEN];
+    user[PURPLE] = categories[PURPLE];
+
+    try {
+      await this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        '카테고리 수정 도중 에러가 발생했습니다.',
+      );
+    }
+
+    const { password, hashedRefreshToken, ...rest } = user;
+
+    return { ...rest };
+  }
+
+
+
+
+  async kakaoLogin(kakaoToken: { token: string }) {
+    const url = 'https://kapi.kakao.com/v2/user/me';
+    const headers = {
+      Authorization: `Bearer ${kakaoToken.token}`,
+      'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+    };
+
+    try {
+      const response = await axios.get(url, { headers });
+      const userData = response.data;
+      const { id: kakaoId, kakao_account } = userData;
+      const nickname = kakao_account?.profile.nickname;
+      const imageUri = kakao_account?.profile.thumbnail_image_url?.replace(
+        /^http:/,
+        'https:',
+      );
+
+      const existingUser = await this.userRepository.findOneBy({
+        email: kakaoId,
+      });
+
+      if (existingUser) {
+        const { accessToken, refreshToken } = await this.getTokens({
+          email: existingUser.email,
+        });
+
+        await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        return { accessToken, refreshToken };
+      }
+
+      const newUser = this.userRepository.create({
+        email: kakaoId,
+        password: nickname ?? '',
+        nickname,
+        kakaoImageUri: imageUri ?? null,
+        loginType: 'kakao',
+      });
+    
+      try {
+        await this.userRepository.save(newUser);
+      } catch (error) {
+        console.log(error)
+        throw new InternalServerErrorException();
+      }
+
+      const {accessToken, refreshToken} = await this.getTokens({
+        email: newUser.email
+      })
+   }
   }
 }
